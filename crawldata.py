@@ -85,7 +85,40 @@ quandl.ApiConfig.api_key = "wh4e1aGKQwZyE4RXWP7s"
 # data.to_csv('TII.csv', index=False)
 # print data.head()
 
+# COLONY STARWOOD HOMES
+data = quandl.get("EOD/SFR")
+data.reset_index(level=0, inplace=True)
+data['bid'] = '0.00 x'
+data['ask'] = '0.00 x'
+data.to_csv('COLONY_STARWOOD_HOMES.csv', index=False)
+print data.head()
 
+
+# STAG INDUSTRIAL INC
+data = quandl.get("EOD/STAG")
+data.reset_index(level=0, inplace=True)
+data['bid'] = '0.00 x 50000'
+data['ask'] = '0.00 x 50000'
+data.to_csv('STAG_INDUSTRIAL_INC.csv', index=False)
+print data.head()
+
+
+# DDR CORP
+data = quandl.get("EOD/DDR")
+data.reset_index(level=0, inplace=True)
+data['bid'] = '0.0000 x'
+data['ask'] = '0.0000 x'
+data.to_csv('DDR_CORP.csv', index=False)
+print data.head()
+
+
+# EQUITY RESIDENTIAL PROPERTIES
+data = quandl.get("EOD/BRP")
+data.reset_index(level=0, inplace=True)
+data['bid'] = '0.00 x'
+data['ask'] = '0.00 x'
+data.to_csv('EQUITY_RESIDENTIAL_PROPERTIES.csv', index=False)
+print data.head()
 
 
 

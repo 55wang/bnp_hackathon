@@ -5,54 +5,87 @@ import matplotlib.pyplot as plt
 import sys
 import scipy.optimize as sco
 
+path = 'csv/'
+symbols = ['intc', 'jpy', 'ms', 'erh', 'med', 'barl', 'STAG_INDUSTRIAL_INC', 'DDR_CORP', 'EQUITY_RESIDENTIAL_PROPERTIES']
 
-symbols = ['intc', 'jpy', 'ms', 'erh', ]
 noa = len(symbols)
 
 data = pd.DataFrame()
-intc = pd.read_csv('intc.csv')
+intc = pd.read_csv(path + 'intc.csv')
 intc = intc.ix[(intc['Date'] >= '2010-01-01') & (intc['Date'] <= '2016-12-31'), ['Date', 'Adj_Close']]
 intc.columns = ['intc_date', 'intc_close']
 
-jpy = pd.read_csv('jpy.csv')
+jpy = pd.read_csv(path + 'jpy.csv')
 jpy = jpy.ix[(jpy['DATE'] >= '2010-01-01') & (jpy['DATE'] <= '2016-12-31'), ['DATE', 'RATE']]
 jpy.columns = ['jpy_date', 'jpy_rate']
 
 total = pd.merge(intc, jpy, how='inner', left_on='intc_date', right_on='jpy_date')
 
-ms = pd.read_csv('MS.csv')
+ms = pd.read_csv(path + 'MS.csv')
 ms = ms.ix[(ms['Date'] >= '2010-01-01') & (ms['Date'] <= '2016-12-31'), ['Date', 'Adj_Close']]
 ms.columns = ['ms_date', 'ms_close']
 
 total = pd.merge(total, ms, how='inner', left_on='intc_date', right_on='ms_date')
 
-erh = pd.read_csv('ERH.csv')
+erh = pd.read_csv(path + 'ERH.csv')
 erh = erh.ix[(erh['Date'] >= '2010-01-01') & (erh['Date'] <= '2016-12-31'), ['Date', 'Adj_Close']]
 erh.columns = ['erh_date', 'erh_close']
 
 total = pd.merge(total, erh, how='inner', left_on='intc_date', right_on='erh_date')
 
-med = pd.read_csv('MED.csv')
+med = pd.read_csv(path + 'MED.csv')
 med = med.ix[(med['Date'] >= '2010-01-01') & (med['Date'] <= '2016-12-31'), ['Date', 'Adj_Close']]
 med.columns = ['med_date', 'med_close']
 
 total = pd.merge(total, med, how='inner', left_on='intc_date', right_on='med_date')
 
-barl = pd.read_csv('barl.csv')
+barl = pd.read_csv(path + 'barl.csv')
 barl = barl.ix[(barl['Date'] >= '2010-01-01') & (barl['Date'] <= '2016-12-31'), ['Date', 'Adj_Close']]
 barl.columns = ['barl_date', 'barl_close']
 
 total = pd.merge(total, barl, how='inner', left_on='intc_date', right_on='barl_date')
 
-US38141G1040USD4 = pd.read_csv('US38141G1040USD4.csv')
-US38141G1040USD4 = US38141G1040USD4.ix[(US38141G1040USD4['Date'] >= '2010-01-01') & (US38141G1040USD4['Date'] <= '2016-12-31'), ['Date', 'Adj_Close']]
-US38141G1040USD4.columns = ['US38141G1040USD4_date', 'US38141G1040USD4_close']
+STAG_INDUSTRIAL_INC = pd.read_csv(path + 'STAG_INDUSTRIAL_INC.csv')
+STAG_INDUSTRIAL_INC = STAG_INDUSTRIAL_INC.ix[(STAG_INDUSTRIAL_INC['Date'] >= '2010-01-01') & (STAG_INDUSTRIAL_INC['Date'] <= '2016-12-31'), ['Date', 'Adj_Close']]
+STAG_INDUSTRIAL_INC.columns = ['STAG_INDUSTRIAL_INC_date', 'STAG_INDUSTRIAL_INC_close']
 
-total = pd.merge(total, US38141G1040USD4, how='inner', left_on='intc_date', right_on='US38141G1040USD4_date')
+total = pd.merge(total, STAG_INDUSTRIAL_INC, how='inner', left_on='intc_date', right_on='STAG_INDUSTRIAL_INC_date')
 
+DDR_CORP = pd.read_csv(path + 'DDR_CORP.csv')
+DDR_CORP = DDR_CORP.ix[(DDR_CORP['Date'] >= '2010-01-01') & (DDR_CORP['Date'] <= '2016-12-31'), ['Date', 'Adj_Close']]
+DDR_CORP.columns = ['DDR_CORP_date', 'DDR_CORP_close']
 
+total = pd.merge(total, DDR_CORP, how='inner', left_on='intc_date', right_on='DDR_CORP_date')
 
+EQUITY_RESIDENTIAL_PROPERTIES = pd.read_csv(path + 'EQUITY_RESIDENTIAL_PROPERTIES.csv')
+EQUITY_RESIDENTIAL_PROPERTIES = EQUITY_RESIDENTIAL_PROPERTIES.ix[(EQUITY_RESIDENTIAL_PROPERTIES['Date'] >= '2010-01-01') & (EQUITY_RESIDENTIAL_PROPERTIES['Date'] <= '2016-12-31'), ['Date', 'Adj_Close']]
+EQUITY_RESIDENTIAL_PROPERTIES.columns = ['EQUITY_RESIDENTIAL_PROPERTIES_date', 'EQUITY_RESIDENTIAL_PROPERTIES_close']
 
+total = pd.merge(total, EQUITY_RESIDENTIAL_PROPERTIES, how='inner', left_on='intc_date', right_on='EQUITY_RESIDENTIAL_PROPERTIES_date')
+
+# COLONY_STARWOOD_HOMES = pd.read_csv(path + 'COLONY_STARWOOD_HOMES.csv')
+# COLONY_STARWOOD_HOMES = COLONY_STARWOOD_HOMES.ix[(COLONY_STARWOOD_HOMES['Date'] >= '2010-01-01') & (COLONY_STARWOOD_HOMES['Date'] <= '2016-12-31'), ['Date', 'Adj_Close']]
+# COLONY_STARWOOD_HOMES.columns = ['COLONY_STARWOOD_HOMES_date', 'COLONY_STARWOOD_HOMES_close']
+#
+# total = pd.merge(total, COLONY_STARWOOD_HOMES, how='inner', left_on='intc_date', right_on='COLONY_STARWOOD_HOMES_date')
+
+# JPM_P_C = pd.read_csv(path + 'JPM_P_C.csv')
+# JPM_P_C = JPM_P_C.ix[(JPM_P_C['Date'] >= '2010-01-01') & (JPM_P_C['Date'] <= '2016-12-31'), ['Date', 'Adj_Close']]
+# JPM_P_C.columns = ['JPM_P_C_date', 'JPM_P_C_close']
+#
+# total = pd.merge(total, JPM_P_C, how='inner', left_on='intc_date', right_on='JPM_P_C_date')
+#
+# WHA = pd.read_csv(path + 'WHA.csv')
+# WHA = WHA.ix[(WHA['Date'] >= '2010-01-01') & (WHA['Date'] <= '2016-12-31'), ['Date', 'Adj_Close']]
+# WHA.columns = ['WHA_date', 'WHA_close']
+#
+# total = pd.merge(total, WHA, how='inner', left_on='intc_date', right_on='WHA_date')
+
+# TII = pd.read_csv(path + 'TII.csv')
+# TII = TII.ix[(TII['Date'] >= '2010-01-01') & (TII['Date'] <= '2016-12-31'), ['Date', 'Adj_Close']]
+# TII.columns = ['TII_date', 'TII_close']
+#
+# total = pd.merge(total, TII, how='inner', left_on='intc_date', right_on='TII_date')
 
 data['intc'] = total['intc_close']
 data['jpy'] = total['jpy_rate']
@@ -60,13 +93,19 @@ data['ms'] = total['ms_close']
 data['erh'] = total['erh_close']
 data['med'] = total['med_close']
 data['barl'] = total['barl_close']
-data['US38141G1040USD4'] = total['US38141G1040USD4_close']
+data['STAG_INDUSTRIAL_INC'] = total['STAG_INDUSTRIAL_INC_close']
+data['DDR_CORP'] = total['DDR_CORP_close']
+data['EQUITY_RESIDENTIAL_PROPERTIES'] = total['EQUITY_RESIDENTIAL_PROPERTIES_close']
 
 
+# data['JPM_P_C'] = total['JPM_P_C_close']
+# data['WHA'] = total['WHA_close']
+# data['TII'] = total['TII_close']
 
 data.columns = symbols
 
 print data.head()
+print data.tail()
 rets = np.log(data / data.shift(1))
 print rets
 print rets.mean()
