@@ -104,12 +104,12 @@ data['EQUITY_RESIDENTIAL_PROPERTIES'] = total['EQUITY_RESIDENTIAL_PROPERTIES_clo
 
 data.columns = symbols
 
-print data.head()
-print data.tail()
+# print data.head()
+# print data.tail()
 rets = np.log(data / data.shift(1))
-print rets
-print rets.mean()
-print rets.cov()
+# print rets
+# print rets.mean()
+# print rets.cov()
 
 # weights = np.random.random(noa)
 # weights /= np.sum(weights)
@@ -122,6 +122,7 @@ print rets.cov()
 prets = []
 pvols = []
 pweights = []
+psharpes = []
 for p in range(2500):
     weights = np.random.random(noa)
     weights /= np.sum(weights)
@@ -129,12 +130,37 @@ for p in range(2500):
     prets.append(np.sum(rets.mean() * weights) * 252)
     pvols.append(np.sqrt(np.dot(weights.T,
                             np.dot(rets.cov() * 252, weights))))
+    psharpes.append((np.sum(rets.mean() * weights) * 252)/np.sqrt(np.dot(weights.T,
+                            np.dot(rets.cov() * 252, weights))))
 prets = np.array(prets)
 pvols = np.array(pvols)
+psharpes = np.array(psharpes)
 
-print pweights
-print prets
-print pvols
+# print pweights
+# print prets
+# print pvols
+# print psharpes
+
+df = pd.DataFrame()
+
+for i in range(len(pweights)):
+    print i
+    list = []
+    # print pweights[i]
+    # print pweights[i][0]
+    temp = pd.DataFrame({'INTC': pd.Series([pweights[i][0]]), 'JPY': pd.Series([pweights[i][1]]), 'MS': pd.Series([pweights[i][2]]),
+                         'ERH': pd.Series([pweights[i][3]]), 'MED': pd.Series([pweights[i][4]]), 'BARL': pd.Series([pweights[i][5]]),
+                         'STAG_INDUSTRIAL_INC': pd.Series([pweights[i][6]]), 'DDR_CORP': pd.Series([pweights[i][7]]),
+                         'EQUITY_RESIDENTIAL_PROPERTIES': pd.Series([pweights[i][8]])})
+
+    temp['returns'] = prets[i]
+    temp['variance'] = pvols[i]
+    temp['psharpe'] = psharpes[i]
+    df = df.append(temp)
+
+print df.head()
+df.to_csv('asset_distribution.csv', index=False)
+
 #
 # plt.figure(figsize=(16, 8))
 # plt.scatter(pvols, prets, c=prets / pvols, marker='o')
@@ -174,13 +200,13 @@ def min_func_variance(weights):
 optv = sco.minimize(min_func_variance, noa * [1. / noa,],
                                     method='SLSQP', bounds=bnds, constraints=cons)
 
-print
-print optv
-print
-print 'best optimised weight'
-print optv['x'].round(3)
-print 'optimised returns: ', statistics(optv['x'])[0]
-print 'optimised variance: ', statistics(optv['x'])[1]
+# print
+# print optv
+# print
+# print 'best optimised weight'
+# print optv['x'].round(3)
+# print 'optimised returns: ', statistics(optv['x'])[0]
+# print 'optimised variance: ', statistics(optv['x'])[1]
 
 plt.figure(figsize=(16, 8))
 plt.scatter(pvols, prets,
