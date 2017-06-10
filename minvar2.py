@@ -7,6 +7,7 @@ import scipy.optimize as sco
 
 path = 'csv/'
 symbols = ['intc', 'jpy', 'ms', 'erh', 'med', 'barl', 'STAG_INDUSTRIAL_INC', 'DDR_CORP', 'EQUITY_RESIDENTIAL_PROPERTIES']
+instrument_value = [548, 159, 292391, 378790, 1139292, 1072180, 1123568, 1140653, 29665]
 
 noa = len(symbols)
 
