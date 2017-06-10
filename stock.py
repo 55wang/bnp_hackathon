@@ -6,7 +6,7 @@ import sys
 import scipy.optimize as sco
 
 
-symbols = ['intc', 'jpy', 'ms', 'erh']
+symbols = ['intc', 'jpy', 'ms', 'erh', ]
 noa = len(symbols)
 
 data = pd.DataFrame()
@@ -32,11 +32,37 @@ erh.columns = ['erh_date', 'erh_close']
 
 total = pd.merge(total, erh, how='inner', left_on='intc_date', right_on='erh_date')
 
+med = pd.read_csv('MED.csv')
+med = med.ix[(med['Date'] >= '2010-01-01') & (med['Date'] <= '2016-12-31'), ['Date', 'Adj_Close']]
+med.columns = ['med_date', 'med_close']
+
+total = pd.merge(total, med, how='inner', left_on='intc_date', right_on='med_date')
+
+barl = pd.read_csv('barl.csv')
+barl = barl.ix[(barl['Date'] >= '2010-01-01') & (barl['Date'] <= '2016-12-31'), ['Date', 'Adj_Close']]
+barl.columns = ['barl_date', 'barl_close']
+
+total = pd.merge(total, barl, how='inner', left_on='intc_date', right_on='barl_date')
+
+US38141G1040USD4 = pd.read_csv('US38141G1040USD4.csv')
+US38141G1040USD4 = US38141G1040USD4.ix[(US38141G1040USD4['Date'] >= '2010-01-01') & (US38141G1040USD4['Date'] <= '2016-12-31'), ['Date', 'Adj_Close']]
+US38141G1040USD4.columns = ['US38141G1040USD4_date', 'US38141G1040USD4_close']
+
+total = pd.merge(total, US38141G1040USD4, how='inner', left_on='intc_date', right_on='US38141G1040USD4_date')
+
+
+
+
 
 data['intc'] = total['intc_close']
 data['jpy'] = total['jpy_rate']
 data['ms'] = total['ms_close']
 data['erh'] = total['erh_close']
+data['med'] = total['med_close']
+data['barl'] = total['barl_close']
+data['US38141G1040USD4'] = total['US38141G1040USD4_close']
+
+
 
 data.columns = symbols
 
