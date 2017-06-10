@@ -145,7 +145,6 @@ df = pd.DataFrame()
 
 for i in range(len(pweights)):
     print i
-    list = []
     # print pweights[i]
     # print pweights[i][0]
     temp = pd.DataFrame({'INTC': pd.Series([pweights[i][0]]), 'JPY': pd.Series([pweights[i][1]]), 'MS': pd.Series([pweights[i][2]]),
@@ -203,10 +202,24 @@ optv = sco.minimize(min_func_variance, noa * [1. / noa,],
 # print
 # print optv
 # print
-# print 'best optimised weight'
-# print optv['x'].round(3)
-# print 'optimised returns: ', statistics(optv['x'])[0]
-# print 'optimised variance: ', statistics(optv['x'])[1]
+print 'best optimised weight'
+optimised_portfolio = optv['x'].round(3)
+print optimised_portfolio
+print 'optimised returns: ', statistics(optv['x'])[0]
+print 'optimised variance: ', statistics(optv['x'])[1]
+print 'optimised sharpe: ', statistics(optv['x'])[2]
+
+temp = pd.DataFrame(
+    {'INTC': pd.Series([optimised_portfolio[0]]), 'JPY': pd.Series([optimised_portfolio[1]]), 'MS': pd.Series([optimised_portfolio[2]]),
+     'ERH': pd.Series([optimised_portfolio[3]]), 'MED': pd.Series([optimised_portfolio[4]]), 'BARL': pd.Series([optimised_portfolio[5]]),
+     'STAG_INDUSTRIAL_INC': pd.Series([optimised_portfolio[6]]), 'DDR_CORP': pd.Series([optimised_portfolio[7]]),
+     'EQUITY_RESIDENTIAL_PROPERTIES': pd.Series([optimised_portfolio[8]])})
+temp['returns'] = statistics(optv['x'])[0]
+temp['variance'] = statistics(optv['x'])[1]
+temp['psharpe'] = statistics(optv['x'])[2]
+
+print temp.head()
+temp.to_csv('optimised_asset_allocation.csv', index=False)
 
 plt.figure(figsize=(16, 8))
 plt.scatter(pvols, prets,
