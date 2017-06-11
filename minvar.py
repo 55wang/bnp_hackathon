@@ -219,6 +219,9 @@ temp['returns'] = statistics(optv['x'])[0]
 temp['variance'] = statistics(optv['x'])[1]
 temp['psharpe'] = statistics(optv['x'])[2]
 
+
+
+
 print temp.head()
 temp.to_csv('optimised_asset_allocation.csv', index=False)
 

@@ -5,6 +5,9 @@ import matplotlib.pyplot as plt
 import sys
 import scipy.optimize as sco
 
+
+initial_invest_amt = 1000000
+
 path = 'csv/'
 symbols = ['intc', 'jpy', 'ms', 'erh', 'med', 'barl', 'STAG_INDUSTRIAL_INC', 'DDR_CORP', 'EQUITY_RESIDENTIAL_PROPERTIES']
 instrument_value = [548, 159, 292391, 378790, 1139292, 1072180, 1123568, 1140653, 29665]
@@ -14,7 +17,7 @@ noa = len(symbols)
 data = pd.DataFrame()
 intc = pd.read_csv(path + '548.csv')
 intc = intc.ix[(intc['Date'] >= '2010-01-01') & (intc['Date'] <= '2016-12-31'), ['Date', 'Adj_Close']]
-
+intc.columns = ['intc_date', 'intc_close']
 
 jpy = pd.read_csv(path + 'jpy.csv')
 jpy = jpy.ix[(jpy['DATE'] >= '2010-01-01') & (jpy['DATE'] <= '2016-12-31'), ['DATE', 'RATE']]
@@ -64,6 +67,9 @@ EQUITY_RESIDENTIAL_PROPERTIES.columns = ['EQUITY_RESIDENTIAL_PROPERTIES_date', '
 
 total = pd.merge(total, EQUITY_RESIDENTIAL_PROPERTIES, how='inner', left_on='intc_date', right_on='EQUITY_RESIDENTIAL_PROPERTIES_date')
 
+print total.head() #2012-05-10
+print total.tail() #2015-01-29
+
 # COLONY_STARWOOD_HOMES = pd.read_csv(path + 'COLONY_STARWOOD_HOMES.csv')
 # COLONY_STARWOOD_HOMES = COLONY_STARWOOD_HOMES.ix[(COLONY_STARWOOD_HOMES['Date'] >= '2010-01-01') & (COLONY_STARWOOD_HOMES['Date'] <= '2016-12-31'), ['Date', 'Adj_Close']]
 # COLONY_STARWOOD_HOMES.columns = ['COLONY_STARWOOD_HOMES_date', 'COLONY_STARWOOD_HOMES_close']
@@ -106,7 +112,6 @@ data['EQUITY_RESIDENTIAL_PROPERTIES'] = total['EQUITY_RESIDENTIAL_PROPERTIES_clo
 data.columns = symbols
 
 print data.head()
-sys.exit()
 # print data.tail()
 rets = np.log(data / data.shift(1))
 # print rets
@@ -157,6 +162,57 @@ for i in range(len(pweights)):
     temp['returns'] = prets[i]
     temp['variance'] = pvols[i]
     temp['psharpe'] = psharpes[i]
+    temp['invested_amount'] = initial_invest_amt
+
+    INTC_amt = 100000 * pweights[i][0]
+    JPY_amt = 100000 * pweights[i][1]
+    MS_amt = 100000 * pweights[i][2]
+    ERH_amt = 100000 * pweights[i][3]
+    MED_amt = 100000 * pweights[i][4]
+    BARL_amt = 100000 * pweights[i][5]
+    STAG_INDUSTRIAL_INC_amt = 100000 * pweights[i][6]
+    DDR_CORP_amt = 100000 * pweights[i][7]
+    EQUITY_RESIDENTIAL_PROPERTIES_amt = 100000 * pweights[i][8]
+
+    Calculated_INTC_amt = float(total.ix[(total['intc_date'] == '2015-01-29'), 'intc_close']) / float(
+        total.ix[(total['intc_date'] == '2012-05-10'), 'intc_close'])\
+          * INTC_amt
+
+    Calculated_JPY_amt = float(total.ix[(total['intc_date'] == '2015-01-29'), 'jpy_rate']) / float(total.ix[
+        (total['intc_date'] == '2012-05-10'), 'jpy_rate']) \
+                          * JPY_amt
+
+    Calculated_MS_amt = float(total.ix[(total['intc_date'] == '2015-01-29'), 'ms_close']) / float(total.ix[
+        (total['intc_date'] == '2012-05-10'), 'ms_close']) \
+                         * MS_amt
+
+    Calculated_ERH_amt = float(total.ix[(total['intc_date'] == '2015-01-29'), 'erh_close']) / float(total.ix[
+        (total['intc_date'] == '2012-05-10'), 'erh_close']) \
+                         * ERH_amt
+
+    Calculated_MED_amt = float(total.ix[(total['intc_date'] == '2015-01-29'), 'med_close']) / float(total.ix[
+        (total['intc_date'] == '2012-05-10'), 'med_close']) \
+                         * MED_amt
+
+    Calculated_BARL_amt = float(total.ix[(total['intc_date'] == '2015-01-29'), 'barl_close']) / float(total.ix[
+        (total['intc_date'] == '2012-05-10'), 'barl_close']) \
+                         * BARL_amt
+
+    Calculated_STAG_INDUSTRIAL_INC_amt = float(total.ix[(total['intc_date'] == '2015-01-29'), 'barl_close']) / float(total.ix[
+        (total['intc_date'] == '2012-05-10'), 'STAG_INDUSTRIAL_INC_close']) \
+                         * STAG_INDUSTRIAL_INC_amt
+
+    Calculated_DDR_CORP_amt = float(total.ix[(total['intc_date'] == '2015-01-29'), 'DDR_CORP_close']) / float(total.ix[
+        (total['intc_date'] == '2012-05-10'), 'DDR_CORP_close']) \
+                                         * DDR_CORP_amt
+
+    Calculated_EQUITY_RESIDENTIAL_PROPERTIES_amt = float(total.ix[(total['intc_date'] == '2015-01-29'), 'EQUITY_RESIDENTIAL_PROPERTIES_close']) / \
+                                                   float(total.ix[(total['intc_date'] == '2012-05-10'), 'EQUITY_RESIDENTIAL_PROPERTIES_close']) \
+                                         * EQUITY_RESIDENTIAL_PROPERTIES_amt
+
+    temp['final_amount'] =  Calculated_INTC_amt + Calculated_JPY_amt + Calculated_MS_amt + Calculated_ERH_amt + Calculated_MED_amt + Calculated_BARL_amt \
+          + Calculated_STAG_INDUSTRIAL_INC_amt + Calculated_DDR_CORP_amt + EQUITY_RESIDENTIAL_PROPERTIES_amt
+
     df = df.append(temp)
 
 print df.head()
@@ -219,6 +275,58 @@ temp = pd.DataFrame(
 temp['returns'] = statistics(optv['x'])[0]
 temp['variance'] = statistics(optv['x'])[1]
 temp['psharpe'] = statistics(optv['x'])[2]
+temp['invested_amount'] = initial_invest_amt
+
+INTC_amt = 100000 * optimised_portfolio[0]
+JPY_amt = 100000 * optimised_portfolio[1]
+MS_amt = 100000 * optimised_portfolio[2]
+ERH_amt = 100000 * optimised_portfolio[3]
+MED_amt = 100000 * optimised_portfolio[4]
+BARL_amt = 100000 * optimised_portfolio[5]
+STAG_INDUSTRIAL_INC_amt = 100000 * optimised_portfolio[6]
+DDR_CORP_amt = 100000 * optimised_portfolio[7]
+EQUITY_RESIDENTIAL_PROPERTIES_amt = 100000 * optimised_portfolio[8]
+
+Calculated_INTC_amt = float(total.ix[(total['intc_date'] == '2015-01-29'), 'intc_close']) / float(
+    total.ix[(total['intc_date'] == '2012-05-10'), 'intc_close']) \
+                      * INTC_amt
+
+Calculated_JPY_amt = float(total.ix[(total['intc_date'] == '2015-01-29'), 'jpy_rate']) / float(
+    total.ix[(total['intc_date'] == '2012-05-10'), 'jpy_rate']) \
+                     * JPY_amt
+
+Calculated_MS_amt = float(total.ix[(total['intc_date'] == '2015-01-29'), 'ms_close']) / float(
+    total.ix[(total['intc_date'] == '2012-05-10'), 'ms_close']) \
+                    * MS_amt
+
+Calculated_ERH_amt = float(total.ix[(total['intc_date'] == '2015-01-29'), 'erh_close']) / float(
+    total.ix[(total['intc_date'] == '2012-05-10'), 'erh_close']) \
+                     * ERH_amt
+
+Calculated_MED_amt = float(total.ix[(total['intc_date'] == '2015-01-29'), 'med_close']) / float(
+    total.ix[(total['intc_date'] == '2012-05-10'), 'med_close']) \
+                     * MED_amt
+
+Calculated_BARL_amt = float(total.ix[(total['intc_date'] == '2015-01-29'), 'barl_close']) / float(
+    total.ix[(total['intc_date'] == '2012-05-10'), 'barl_close']) \
+                      * BARL_amt
+
+Calculated_STAG_INDUSTRIAL_INC_amt = float(total.ix[(total['intc_date'] == '2015-01-29'), 'barl_close']) / float(
+    total.ix[(total['intc_date'] == '2012-05-10'), 'STAG_INDUSTRIAL_INC_close']) \
+                                     * STAG_INDUSTRIAL_INC_amt
+
+Calculated_DDR_CORP_amt = float(total.ix[(total['intc_date'] == '2015-01-29'), 'DDR_CORP_close']) / \
+                          float(total.ix[(total['intc_date'] == '2012-05-10'), 'DDR_CORP_close']) \
+                          * DDR_CORP_amt
+
+Calculated_EQUITY_RESIDENTIAL_PROPERTIES_amt = float(total.ix[(total['intc_date'] == '2015-01-29'), 'EQUITY_RESIDENTIAL_PROPERTIES_close']) / \
+                                               float(total.ix[(total['intc_date'] == '2012-05-10'), 'EQUITY_RESIDENTIAL_PROPERTIES_close']) \
+                                               * EQUITY_RESIDENTIAL_PROPERTIES_amt
+
+temp['final_amount'] = Calculated_INTC_amt + Calculated_JPY_amt + Calculated_MS_amt + Calculated_ERH_amt \
+                       + Calculated_MED_amt + Calculated_BARL_amt + Calculated_STAG_INDUSTRIAL_INC_amt \
+                       + Calculated_DDR_CORP_amt + EQUITY_RESIDENTIAL_PROPERTIES_amt
+
 
 print temp.head()
 temp.to_csv('optimised_asset_allocation.csv', index=False)
