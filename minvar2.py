@@ -6,7 +6,9 @@ import sys
 import scipy.optimize as sco
 
 
-initial_invest_amt = 1000000
+# initial_invest_amt = 10000
+# initial_invest_amt = 20000
+initial_invest_amt = 50000
 
 path = 'csv/'
 symbols = ['intc', 'jpy', 'ms', 'erh', 'med', 'barl', 'STAG_INDUSTRIAL_INC', 'DDR_CORP', 'EQUITY_RESIDENTIAL_PROPERTIES']
