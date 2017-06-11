@@ -166,15 +166,15 @@ for i in range(len(pweights)):
     temp['psharpe'] = psharpes[i]
     temp['invested_amount'] = initial_invest_amt
 
-    INTC_amt = 100000 * pweights[i][0]
-    JPY_amt = 100000 * pweights[i][1]
-    MS_amt = 100000 * pweights[i][2]
-    ERH_amt = 100000 * pweights[i][3]
-    MED_amt = 100000 * pweights[i][4]
-    BARL_amt = 100000 * pweights[i][5]
-    STAG_INDUSTRIAL_INC_amt = 100000 * pweights[i][6]
-    DDR_CORP_amt = 100000 * pweights[i][7]
-    EQUITY_RESIDENTIAL_PROPERTIES_amt = 100000 * pweights[i][8]
+    INTC_amt = initial_invest_amt * pweights[i][0]
+    JPY_amt = initial_invest_amt * pweights[i][1]
+    MS_amt = initial_invest_amt * pweights[i][2]
+    ERH_amt = initial_invest_amt * pweights[i][3]
+    MED_amt = initial_invest_amt * pweights[i][4]
+    BARL_amt = initial_invest_amt * pweights[i][5]
+    STAG_INDUSTRIAL_INC_amt = initial_invest_amt * pweights[i][6]
+    DDR_CORP_amt = initial_invest_amt * pweights[i][7]
+    EQUITY_RESIDENTIAL_PROPERTIES_amt = initial_invest_amt * pweights[i][8]
 
     Calculated_INTC_amt = float(total.ix[(total['intc_date'] == '2015-01-29'), 'intc_close']) / float(
         total.ix[(total['intc_date'] == '2012-05-10'), 'intc_close'])\
@@ -279,15 +279,15 @@ temp['variance'] = statistics(optv['x'])[1]
 temp['psharpe'] = statistics(optv['x'])[2]
 temp['invested_amount'] = initial_invest_amt
 
-INTC_amt = 100000 * optimised_portfolio[0]
-JPY_amt = 100000 * optimised_portfolio[1]
-MS_amt = 100000 * optimised_portfolio[2]
-ERH_amt = 100000 * optimised_portfolio[3]
-MED_amt = 100000 * optimised_portfolio[4]
-BARL_amt = 100000 * optimised_portfolio[5]
-STAG_INDUSTRIAL_INC_amt = 100000 * optimised_portfolio[6]
-DDR_CORP_amt = 100000 * optimised_portfolio[7]
-EQUITY_RESIDENTIAL_PROPERTIES_amt = 100000 * optimised_portfolio[8]
+INTC_amt = initial_invest_amt * optimised_portfolio[0]
+JPY_amt = initial_invest_amt * optimised_portfolio[1]
+MS_amt = initial_invest_amt * optimised_portfolio[2]
+ERH_amt = initial_invest_amt * optimised_portfolio[3]
+MED_amt = initial_invest_amt * optimised_portfolio[4]
+BARL_amt = initial_invest_amt * optimised_portfolio[5]
+STAG_INDUSTRIAL_INC_amt = initial_invest_amt * optimised_portfolio[6]
+DDR_CORP_amt = initial_invest_amt * optimised_portfolio[7]
+EQUITY_RESIDENTIAL_PROPERTIES_amt = initial_invest_amt * optimised_portfolio[8]
 
 Calculated_INTC_amt = float(total.ix[(total['intc_date'] == '2015-01-29'), 'intc_close']) / float(
     total.ix[(total['intc_date'] == '2012-05-10'), 'intc_close']) \
